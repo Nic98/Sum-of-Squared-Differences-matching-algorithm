@@ -16,8 +16,10 @@ if __name__ == '__main__':
     left_image = cv2.cvtColor(left_image, cv2.COLOR_RGB2GRAY).astype(np.int32)
     right_image = cv2.cvtColor(right_image, cv2.COLOR_RGB2GRAY).astype(np.int32)
 
-    disparity = compute_SSD(left_image, right_image, 9, 9)
 
+    small_disparity = compute_SSD(left_image, right_image, 10, 10)
+    large_disparity = compute_SSD(left_image, right_image, 50, 50)
+    disparity = compute_SSD(left_image, right_image, 30, 30)
     evaluate(disparity, truth_image)
 
     # plt.subplot(3, 1, 1)
