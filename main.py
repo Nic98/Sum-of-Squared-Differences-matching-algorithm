@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from SSD import*
+from evaluation import*
 from matplotlib import pyplot as plt
 from numba import njit, prange
 
@@ -16,6 +17,8 @@ if __name__ == '__main__':
     right_image = cv2.cvtColor(right_image, cv2.COLOR_RGB2GRAY).astype(np.int32)
 
     disparity = compute_SSD(left_image, right_image, 9, 9)
+
+    evaluate(disparity, truth_image)
 
     # plt.subplot(3, 1, 1)
     # plt.imshow(left_image, cmap='gray')
