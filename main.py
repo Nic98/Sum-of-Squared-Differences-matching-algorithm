@@ -12,22 +12,26 @@ if __name__ == '__main__':
     # Image Right
     right_image = cv2.imread('./Dataset/2018-07-09-16-11-56_2018-07-09-16-11-56-702-right.jpg')
     # Read the images in Grayscale format
-    left_image = cv2.cvtColor(left_image, cv2.COLOR_RGB2GRAY).astype(np.int64)
-    right_image = cv2.cvtColor(right_image, cv2.COLOR_RGB2GRAY).astype(np.int64)
+    left_image = cv2.cvtColor(left_image, cv2.COLOR_RGB2GRAY).astype(np.int32)
+    right_image = cv2.cvtColor(right_image, cv2.COLOR_RGB2GRAY).astype(np.int32)
 
-    compute_SSD(left_image, right_image, 1)
+    disparity = compute_SSD(left_image, right_image, 9, 9)
 
-    plt.subplot(2, 1, 1)
-    plt.imshow(left_image, cmap='gray')
-    plt.title("Original Left")
-    plt.axis('off')
+    # plt.subplot(3, 1, 1)
+    # plt.imshow(left_image, cmap='gray')
+    # plt.title("Original Left")
+    # plt.axis('off')
+    #
+    # plt.subplot(3, 1, 2)
+    # plt.imshow(right_image, cmap='gray')
+    # plt.title("Original Right")
+    # plt.axis('off')
+    # plt.show()
 
-    plt.subplot(2, 1, 2)
-    plt.imshow(right_image, cmap='gray')
-    plt.title("Original Right")
+    plt.subplot(3, 1, 3)
+    plt.imshow(disparity, cmap='gray')
+    plt.title("disparity")
     plt.axis('off')
     plt.show()
-
-
     pass
 
