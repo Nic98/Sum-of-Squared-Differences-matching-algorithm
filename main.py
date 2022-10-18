@@ -33,11 +33,17 @@ if __name__ == '__main__':
     # blur_disparity = mask_Gaussian(left_image, right_image, 10, 10)
     # evaluate(blur_disparity, truth_image)
 
+    '''
+    Compute ZSSD
+    '''
+    zssd_disparity = compute_ZSSD(left_image, right_image, 50, 50)
+    evaluate(zssd_disparity, truth_image)
+
     # plt.subplot(3, 1, 1)
     # plt.imshow(left_image, cmap='gray')
     # plt.title("Original Left")
     # plt.axis('off')
-    #
+
     # plt.subplot(3, 1, 2)
     # plt.imshow(right_image, cmap='gray')
     # plt.title("Original Right")
@@ -45,7 +51,7 @@ if __name__ == '__main__':
     # plt.show()
 
     plt.subplot(3, 1, 3)
-    plt.imshow(blur_disparity, cmap='gray')
+    plt.imshow(zssd_disparity, cmap='gray')
     plt.title("disparity")
     plt.axis('off')
     plt.show()
