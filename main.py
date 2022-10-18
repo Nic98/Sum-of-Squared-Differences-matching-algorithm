@@ -21,10 +21,10 @@ if __name__ == '__main__':
     Try to balance the window size to a reasonable value
     '''
     # small_disparity = compute_SSD(left_image, right_image, 10, 10)
-    # large_disparity = compute_SSD(left_image, right_image, 50, 50)
+    large_disparity = compute_SSD(left_image, right_image, 50, 50)
     # disparity = compute_SSD(left_image, right_image, 30, 30)
     # evaluate(small_disparity, truth_image)
-    # evaluate(large_disparity, truth_image)
+    evaluate(large_disparity, truth_image)
     # evaluate(disparity, truth_image)
     '''
     Using a Gaussian kernel on the window to emphasize on the

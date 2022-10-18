@@ -213,7 +213,7 @@ def compute_ZSSD(left_image, right_image, win_width, win_height):
 
                     l = left_win-(np.mean(left_win))
                     r = right_win-(np.mean(right_win))
-                    dif = np.sum(l-r) ** 2
+                    dif = np.sum((l-r) ** 2)
 
                     if dif < min:
                         min = dif
