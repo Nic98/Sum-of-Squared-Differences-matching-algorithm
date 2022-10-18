@@ -1,20 +1,22 @@
 import numpy as np
 
-def evaluate(img_disparity, img_gt):
-    valid = img_gt > 0
-    valid_num = np.sum(valid)
+def evaluate(disparity, truth):
+    valid = truth > 0
+    val = np.sum(valid)
+    disparity *= valid
+    inval = np.sum(truth == 0)
 
-    img_disparity = img_disparity * valid
+    error = np.abs(disparity - truth)
+    error_0_25 = cal_error(error, 0.25, inval, val)
+    error_0_5 = cal_error(error, 0.5, inval, val)
+    error_1 = cal_error(error, 1, inval, val)
+    error_2 = cal_error(error, 2, inval, val)
+    error_4 = cal_error(error, 4, inval, val)
 
-    invalid_num = np.sum(img_gt == 0)
-
-    error = np.abs(img_disparity - img_gt)
-    error_0_25 = (np.sum(error < 0.25) - invalid_num) / valid_num
-    error_0_5 = (np.sum(error < 0.5) - invalid_num) / valid_num
-    error_1 = (np.sum(error < 1) - invalid_num) / valid_num
-    error_2 = (np.sum(error < 2) - invalid_num) / valid_num
-    error_4 = (np.sum(error < 4) - invalid_num) / valid_num
     print(error_0_25, error_0_5, error_1, error_2, error_4)
-
-    rms = np.sqrt(np.sum((img_disparity - img_gt) ** 2) / np.sum(valid))
+    rms = np.sqrt(np.sum((disparity - truth) ** 2) / np.sum(valid))
     print(rms)
+
+def cal_error(error, pixel, inval, val):
+    res = np.sum(error < pixel) - inval / val
+    return res

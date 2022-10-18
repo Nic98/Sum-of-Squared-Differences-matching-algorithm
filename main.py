@@ -21,11 +21,12 @@ if __name__ == '__main__':
     Try to balance the window size to a reasonable value
     '''
     # small_disparity = compute_SSD(left_image, right_image, 10, 10)
-    large_disparity = compute_SSD(left_image, right_image, 50, 50)
-    # disparity = compute_SSD(left_image, right_image, 30, 30)
+    # large_disparity = compute_SSD(left_image, right_image, 70, 70)
     # evaluate(small_disparity, truth_image)
-    evaluate(large_disparity, truth_image)
+    # evaluate(large_disparity, truth_image)
+    # disparity = compute_SSD(left_image, right_image, 50, 50)
     # evaluate(disparity, truth_image)
+
     '''
     Using a Gaussian kernel on the window to emphasize on the
     center pixel.
@@ -39,6 +40,12 @@ if __name__ == '__main__':
     zssd_disparity = compute_ZSSD(left_image, right_image, 50, 50)
     evaluate(zssd_disparity, truth_image)
 
+    '''
+    Smoothing
+    '''
+    zssd_smooth_disparity = compute_ZSSD_smooth(left_image, right_image, zssd_disparity, 0.5, 50, 50)
+    evaluate(zssd_smooth_disparity, truth_image)
+
     # plt.subplot(3, 1, 1)
     # plt.imshow(left_image, cmap='gray')
     # plt.title("Original Left")
@@ -51,7 +58,7 @@ if __name__ == '__main__':
     # plt.show()
 
     plt.subplot(3, 1, 3)
-    plt.imshow(zssd_disparity, cmap='gray')
+    plt.imshow(zssd_smooth_disparity, cmap='gray')
     plt.title("disparity")
     plt.axis('off')
     plt.show()
