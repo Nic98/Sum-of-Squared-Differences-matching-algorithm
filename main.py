@@ -47,8 +47,9 @@ if __name__ == '__main__':
     # large_disparity = compute_SSD(left_image, right_image, 70, 70)
     # evaluate(small_disparity, truth_image)
     # evaluate(large_disparity, truth_image)
-    disparity = Original_NCC(left_image, right_image, 50)
-    old_evaluate(disparity, truth_image)
+    # disparity = Original_NCC(left_image, right_image, 40)
+    # old_evaluate(disparity, truth_image)
+
 
     '''
     Using a Gaussian kernel on the window to emphasize on the
@@ -60,14 +61,20 @@ if __name__ == '__main__':
     '''
     Compute ZSSD
     '''
-    #zssd_disparity = compute_ZSSD(left_image, right_image, 50, 50)
-    #evaluate(zssd_disparity, truth_image)
+    # zssd_disparity = compute_ZSSD(left_image, right_image, 40, 40)
+    # evaluate(zssd_disparity, truth_image)
 
+    '''
+    Compute ZSSD with search range
+    '''
+    zssd_disparity_withRange = compute_ZSSD_withRange(left_image, right_image, 40, 40)
+    evaluate(zssd_disparity_withRange, truth_image)
     '''
     Smoothing
     '''
-    #zssd_smooth_disparity = compute_ZSSD_smooth(left_image, right_image, zssd_disparity, 0.5, 50, 50)
-    #evaluate(zssd_smooth_disparity, truth_image)
+    ground_truth = truth_image.astype(np.int8)
+    zssd_smooth_disparity = compute_ZSSD_smooth(left_image, right_image, ground_truth, 0.2, 40, 40)
+    evaluate(zssd_smooth_disparity, truth_image)
 
     # plt.subplot(3, 1, 1)
     # plt.imshow(left_image, cmap='gray')
@@ -81,7 +88,7 @@ if __name__ == '__main__':
     # plt.show()
 
     plt.subplot(3, 1, 3)
-    plt.imshow(disparity, cmap='gray')
+    plt.imshow(zssd_smooth_disparity, cmap='gray')
     plt.title("disparity")
     plt.axis('off')
     plt.show()

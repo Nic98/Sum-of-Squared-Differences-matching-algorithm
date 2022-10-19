@@ -18,5 +18,5 @@ def evaluate(disparity, truth):
     print(rms)
 
 def cal_error(error, pixel, inval, val):
-    res = np.sum(error < pixel) - inval / val
+    res = (np.sum(error < pixel) - inval) / val
     return res
