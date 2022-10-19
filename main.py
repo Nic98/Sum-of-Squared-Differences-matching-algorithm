@@ -1,10 +1,33 @@
 import numpy as np
 import cv2
 from SSD import *
+from NCC import *
 from evaluation import *
 from matplotlib import pyplot as plt
 from numba import njit, prange
 import time
+
+
+def old_evaluate(img_disparity, img_gt):
+    valid = img_gt > 0
+    valid_num = np.sum(valid)
+
+    img_disparity = img_disparity * valid
+
+    invalid_num = np.sum(img_gt == 0)
+
+    error = np.abs(img_disparity - img_gt)
+    error_0_25 = (np.sum(error < 0.25) - invalid_num) / valid_num
+    error_0_5 = (np.sum(error < 0.5) - invalid_num) / valid_num
+    error_1 = (np.sum(error < 1) - invalid_num) / valid_num
+    error_2 = (np.sum(error < 2) - invalid_num) / valid_num
+    error_4 = (np.sum(error < 4) - invalid_num) / valid_num
+    print(error_0_25, error_0_5, error_1, error_2, error_4)
+
+    rms = np.sqrt(np.sum((img_disparity - img_gt) ** 2) / np.sum(valid))
+    print(rms)
+
+
 
 if __name__ == '__main__':
     # Ground Truth image
@@ -24,8 +47,8 @@ if __name__ == '__main__':
     # large_disparity = compute_SSD(left_image, right_image, 70, 70)
     # evaluate(small_disparity, truth_image)
     # evaluate(large_disparity, truth_image)
-    # disparity = compute_SSD(left_image, right_image, 50, 50)
-    # evaluate(disparity, truth_image)
+    disparity = Original_NCC(left_image, right_image, 10)
+    old_evaluate(disparity, truth_image)
 
     '''
     Using a Gaussian kernel on the window to emphasize on the
@@ -37,14 +60,14 @@ if __name__ == '__main__':
     '''
     Compute ZSSD
     '''
-    zssd_disparity = compute_ZSSD(left_image, right_image, 50, 50)
-    evaluate(zssd_disparity, truth_image)
+    #zssd_disparity = compute_ZSSD(left_image, right_image, 50, 50)
+    #evaluate(zssd_disparity, truth_image)
 
     '''
     Smoothing
     '''
-    zssd_smooth_disparity = compute_ZSSD_smooth(left_image, right_image, zssd_disparity, 0.5, 50, 50)
-    evaluate(zssd_smooth_disparity, truth_image)
+    #zssd_smooth_disparity = compute_ZSSD_smooth(left_image, right_image, zssd_disparity, 0.5, 50, 50)
+    #evaluate(zssd_smooth_disparity, truth_image)
 
     # plt.subplot(3, 1, 1)
     # plt.imshow(left_image, cmap='gray')
@@ -58,7 +81,7 @@ if __name__ == '__main__':
     # plt.show()
 
     plt.subplot(3, 1, 3)
-    plt.imshow(zssd_smooth_disparity, cmap='gray')
+    plt.imshow(disparity, cmap='gray')
     plt.title("disparity")
     plt.axis('off')
     plt.show()

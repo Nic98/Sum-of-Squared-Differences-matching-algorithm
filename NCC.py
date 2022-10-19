@@ -64,7 +64,8 @@ def Z_NCC(left_img, right_img, window_size=9):
         # np.fill not supported by numba
         disparity_mtx[i, j] = left_img[i, j]
     disparity_mtx = disparity_mtx.astype(np.uint8)
-
+    left_mean = np.mean(left_img)
+    right_mean = np.mean(right_img)
     for left_y in prange(height):
         for left_x in prange(width):
             wleft, wright, wdown, wup = threshold, threshold, threshold, threshold
@@ -92,10 +93,9 @@ def Z_NCC(left_img, right_img, window_size=9):
                     right_window = np.ascontiguousarray(
                         right_img[window_height[0]:window_height[1], right_window_width[0]:right_window_width[1]])
                     n = (window_width[1] - window_width[0]) * (window_height[1] - window_height[0])
-                    left_mean = np.mean(left_img)
-                    right_mean = np.mean(right_img)
+
                     ncc_score = np.sum(np.multiply(left_window - left_mean, right_window - right_mean))
-                    ncc_score = ncc_score / (np.sqrt(np.sum((left_window - left_mean)**2)) * np.sqrt(np.sum((right_window - right_mean)**2)))
+                    ncc_score = ncc_score / (np.sqrt(np.sum((left_window - left_mean) ** 2)) * np.sqrt(np.sum((right_window - right_mean) ** 2)))
                     if ncc_score > score:
                         score = ncc_score
                         best_match_disparity = np.abs(left_x - right_x)
