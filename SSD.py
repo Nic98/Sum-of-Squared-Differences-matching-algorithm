@@ -16,7 +16,7 @@ def compute_SSD(left_image, right_image, win_width, win_height):
     else:
         raise Exception("Two images have different shape")
     print("height:", height, "width:", width)
-
+    print("Window size:", win_width, win_height)
     # Depth (disparity) map
     depth = np.zeros((height, width), np.uint8)
     for i, j in np.ndindex(depth.shape):
@@ -85,7 +85,7 @@ def mask_Gaussian(left_image, right_image, win_width, win_height):
     else:
         raise Exception("Two images have different shape")
     print("height:", height, "width:", width)
-
+    print("Window size:", win_width, win_height)
     # Depth (disparity) map
     depth = np.zeros((height, width), np.uint8)
     for i, j in np.ndindex(depth.shape):
@@ -157,7 +157,7 @@ def compute_ZSSD(left_image, right_image, win_width, win_height):
     else:
         raise Exception("Two images have different shape")
     print("height:", height, "width:", width)
-
+    print("Window size:", win_width, win_height)
     # Depth (disparity) map
     depth = np.zeros((height, width), np.uint8)
     for i, j in np.ndindex(depth.shape):
@@ -230,7 +230,7 @@ def compute_ZSSD_withRange(left_image, right_image, win_width, win_height):
     else:
         raise Exception("Two images have different shape")
     print("height:", height, "width:", width)
-
+    print("Window size:", win_width, win_height)
     # Depth (disparity) map
     depth = np.zeros((height, width), np.uint8)
     for i, j in np.ndindex(depth.shape):
@@ -303,7 +303,7 @@ def compute_ZSSD_smooth(left_image, right_image, disparity, weight, win_width, w
     else:
         raise Exception("Two images have different shape")
     print("height:", height, "width:", width)
-
+    print("Window size:", win_width, win_height)
     # Depth (disparity) map
     depth = np.zeros((height, width), np.uint8)
     for i, j in np.ndindex(depth.shape):
