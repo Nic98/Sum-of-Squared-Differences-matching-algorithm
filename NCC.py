@@ -10,6 +10,7 @@ def Original_NCC(left_img, right_img, window_size=9):
     height = left_img.shape[0]
     disparity_mtx = np.zeros((height, width))
     threshold = int(floor(window_size / 2))
+    x_range = 120
     print("height: ", height)
     print("width: ", width)
     for i, j in np.ndindex(disparity_mtx.shape):
@@ -34,7 +35,7 @@ def Original_NCC(left_img, right_img, window_size=9):
                 left_img[int(window_height[0]):int(window_height[1]), int(left_window_width[0]):int(left_window_width[1])])
             best_match_disparity = 9999
             score = 0
-            for right_x in prange(left_x + 1):
+            for right_x in prange(left_x - x_range, left_x + 1):
                 if right_x - left_bound < 0:
                     pass
                 elif right_x + right_bound + 1 > width:
@@ -58,6 +59,7 @@ def Z_NCC(left_img, right_img, window_size=9):
     height = left_img.shape[0]
     disparity_mtx = np.zeros((height, width))
     threshold = int(floor(window_size / 2))
+    x_range = 120
     print("height: ", height)
     print("width: ", width)
     for i, j in np.ndindex(disparity_mtx.shape):
@@ -83,7 +85,7 @@ def Z_NCC(left_img, right_img, window_size=9):
                 left_img[int(window_height[0]):int(window_height[1]), int(left_window_width[0]):int(left_window_width[1])])
             best_match_disparity = 9999
             score = 0
-            for right_x in prange(left_x + 1):
+            for right_x in prange(left_x - x_range, left_x + 1):
                 if right_x - left_bound < 0:
                     pass
                 elif right_x + right_bound + 1 > width:
@@ -93,9 +95,13 @@ def Z_NCC(left_img, right_img, window_size=9):
                     right_window = np.ascontiguousarray(
                         right_img[window_height[0]:window_height[1], right_left_window_width[0]:right_left_window_width[1]])
                     n = (left_window_width[1] - left_window_width[0]) * (window_height[1] - window_height[0])
-
-                    ncc_score = np.sum(np.multiply(left_window - left_mean, right_window - right_mean))
-                    ncc_score = ncc_score / (np.sqrt(np.sum((left_window - left_mean) ** 2)) * np.sqrt(np.sum((right_window - right_mean) ** 2)))
+                    left_mean = np.mean(left_window)
+                    right_mean = np.mean(right_window)
+                    ncc_score = np.multiply(left_window - left_mean, right_window - right_mean)
+                    left_var = np.std(left_window)#(np.sqrt(left_window**2 - left_mean **2))
+                    right_var = np.std(right_window)#(np.sqrt(right_window ** 2 - right_mean ** 2))
+                    ncc_score = np.sum(ncc_score / (left_var * right_var))
+                    #ncc_score = ncc_score / (np.sqrt(np.sum((left_window - left_mean) ** 2)) * np.sqrt(np.sum((right_window - right_mean) ** 2)))
                     if ncc_score > score:
                         score = ncc_score
                         best_match_disparity = np.abs(left_x - right_x)
