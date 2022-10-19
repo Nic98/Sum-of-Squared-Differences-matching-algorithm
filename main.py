@@ -47,7 +47,7 @@ if __name__ == '__main__':
     # large_disparity = compute_SSD(left_image, right_image, 70, 70)
     # evaluate(small_disparity, truth_image)
     # evaluate(large_disparity, truth_image)
-    disparity = Original_NCC(left_image, right_image, 10)
+    disparity = Original_NCC(left_image, right_image, 50)
     old_evaluate(disparity, truth_image)
 
     '''
