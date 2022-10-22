@@ -3,7 +3,7 @@ import numpy as np
 from numba import njit, prange
 import tqdm
 import time
-
+import tqdm
 @njit(parallel=True)
 def compute_SAD(left_image, right_image, win_width, win_height):
     # start_time = time.time()
@@ -51,7 +51,7 @@ def compute_SAD(left_image, right_image, win_width, win_height):
                                             w_range[0]:w_range[1]])
             min = 999999
             disparity = 999999
-            for r_x in prange(l_x - left, l_x + 1):
+            for r_x in prange(l_x - left, width + 1):
 
                 if r_x < left:
                     pass

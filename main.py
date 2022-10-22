@@ -42,7 +42,7 @@ if __name__ == '__main__':
     Try to balance the window size to a reasonable value
     '''
 
-    ws = 10
+    ws = 50
     # SAD
     print("{} with window size {} ".format("SAD", ws))
     sad_dis = compute_SAD(left_image, right_image, ws, ws)
