@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     ws = 10
 
-    zncc_disparity = Z_NCC(left_image, right_image, ws) # 22.19
+    zncc_disparity = ZNCC(left_image, right_image, ws) # 22.19
     e1, e2, e3, e4, e5, rms = evaluate(zncc_disparity, truth_image)
     print("ZNCC WS10 rms = ", rms)
     smooth_zncc_disparity = disparity_smooth(left_image, right_image, zncc_disparity, ws, "zncc", 0.6) # 18.49
