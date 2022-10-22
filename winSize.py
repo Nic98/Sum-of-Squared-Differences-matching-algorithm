@@ -6,7 +6,7 @@ def evaluate_diff_size(left_image, right_image, truth_image):
     xaxis = range(10, 120, 10)
 
     for x in xaxis:
-        disparity = Z_NCC(left_image, right_image, x)
+        disparity = ZNCC(left_image, right_image, x)
         rms_l.append(evaluate(disparity, truth_image))
 
     plt.plot(xaxis, rms_l)

@@ -111,7 +111,7 @@ def ZNCC(left_img, right_img, window_size=9):
     return disparity_mtx
 
 
-@njit(parallel=True)
+# @njit(parallel=True)
 def filter_match(left_img, right_img, window_size=10, algo='ncc'):
     width = left_img.shape[1]
     height = left_img.shape[0]
@@ -122,8 +122,8 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
         # np.fill not supported by numba
         disparity_mtx[i, j] = left_img[i, j]
     disparity_mtx = disparity_mtx.astype(np.uint8)
-    for left_y in prange(height):
-        for left_x in prange(width):
+    for left_y in tqdm.tqdm(range(height)):
+        for left_x in range(width):
             left_bound, right_bound, bottom_bound, top_bound = threshold, threshold, threshold, threshold
             if left_x < threshold:
                 left_bound = left_x
@@ -143,14 +143,14 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
             my_filter = np.zeros(w_shape, float)
             y_axis = w_shape[1]
             x_axis = w_shape[0]
-            for pt1 in prange(y_axis):
+            for pt1 in range(y_axis):
                 for pt2 in prange(x_axis):
                     dist = np.sqrt(pt1 ** 2 + pt2 ** 2) - 1
                     discount = 1 - ((1 / max(y_axis, x_axis)) * dist)  # * 0.3
                     if discount < 0:
                         discount = 0
                     my_filter[pt2, pt1] = discount
-            for i in prange(y_axis):
+            for i in range(y_axis):
                 if i != 0:
                     my_filter[0, i] = 1
                 else:
@@ -161,7 +161,7 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
             left_window = left_window * my_filter
             best_match_disparity = 9999
             score = 0
-            for right_x in prange(left_x - x_range, left_x + 1):
+            for right_x in range(left_x - x_range, left_x + 1):
                 if right_x - left_bound < 0:
                     pass
                 elif right_x + right_bound + 1 > width:
@@ -194,7 +194,7 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
 
 
 
-@njit(parallel=True)
+# @njit(parallel=True)
 def disparity_smooth(left_img, right_img, disparity, window_size=10, algo='ncc', weight = 0.9):
     width = left_img.shape[1]
     height = left_img.shape[0]
@@ -205,7 +205,7 @@ def disparity_smooth(left_img, right_img, disparity, window_size=10, algo='ncc',
         # np.fill not supported by numba
         disparity_mtx[i, j] = left_img[i, j]
     disparity_mtx = disparity_mtx.astype(np.uint8)
-    for left_y in prange(height):
+    for left_y in tqdm.tqdm(range(height)):
         for left_x in prange(width):
             left_bound, right_bound, bottom_bound, top_bound = threshold, threshold, threshold, threshold
             if left_x < threshold:
@@ -226,12 +226,12 @@ def disparity_smooth(left_img, right_img, disparity, window_size=10, algo='ncc',
             my_filter = np.zeros(w_shape, float)
             y_axis = w_shape[1]
             x_axis = w_shape[0]
-            for pt1 in prange(y_axis):
-                for pt2 in prange(x_axis):
+            for pt1 in range(y_axis):
+                for pt2 in range(x_axis):
                     dist = np.sqrt(pt1 ** 2 + pt2 ** 2) - 1
                     discount = 1 - ((1 / max(y_axis, x_axis)) * dist)  # * 0.3
                     my_filter[pt2, pt1] = discount
-            for i in prange(y_axis):
+            for i in range(y_axis):
                 if i != 0:
                     my_filter[0, i] = 1
                 else:
@@ -244,7 +244,7 @@ def disparity_smooth(left_img, right_img, disparity, window_size=10, algo='ncc',
             # print(filtered_window)
             best_match_disparity = 9999
             score = 0
-            for right_x in prange(left_x - x_range, left_x + 1):
+            for right_x in range(left_x - x_range, left_x + 1):
                 if right_x - left_bound < 0:
                     pass
                 elif right_x + right_bound + 1 > width:

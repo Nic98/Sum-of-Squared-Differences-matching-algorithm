@@ -22,7 +22,7 @@ def mask_Gaussian(left_image, right_image, win_width, win_height):
     half_w = win_width // 2
     half_h = win_height // 2
 
-    for y in prange(height):
+    for y in tqdm.tqdm(range(height)):
 
         top = half_h
         bottom = half_h
@@ -33,7 +33,7 @@ def mask_Gaussian(left_image, right_image, win_width, win_height):
             bottom = height - y - 1
         h_range = (y - top, y + bottom + 1)
 
-        for l_x in prange(width):
+        for l_x in range(width):
 
             left = half_w
             right = half_w
@@ -52,7 +52,7 @@ def mask_Gaussian(left_image, right_image, win_width, win_height):
 
             min = 999999
             disparity = 999999
-            for r_x in prange(l_x-120, l_x + 1):
+            for r_x in range(l_x-120, l_x + 1):
 
                 if r_x < left:
                     pass
