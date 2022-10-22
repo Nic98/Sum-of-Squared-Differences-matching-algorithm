@@ -1,22 +1,28 @@
 import numpy as np
-
+from copy import deepcopy
 def evaluate(disparity, truth):
-    valid = truth > 0
-    val = np.sum(valid)
-    disparity *= valid
-    inval = np.sum(truth == 0)
-
+    shape = disparity.shape
+    remove_zero = deepcopy(truth)
+    zero_counter = 0
+    true_counter = 0
+    for i in range(shape[0]):
+        for j in range(shape[1]):
+            if truth[i, j] > 0 :
+                true_counter += 1
+                remove_zero[i, j] = True
+            else:
+                zero_counter += 1
+                remove_zero[i, j] = False
+    disparity = disparity * remove_zero
     error = np.abs(disparity - truth)
-    error_0_25 = cal_error(error, 0.25, inval, val)
-    error_0_5 = cal_error(error, 0.5, inval, val)
-    error_1 = cal_error(error, 1, inval, val)
-    error_2 = cal_error(error, 2, inval, val)
-    error_4 = cal_error(error, 4, inval, val)
-
-    print(error_0_25, error_0_5, error_1, error_2, error_4)
-    rms = np.sqrt(np.sum((disparity - truth) ** 2) / np.sum(valid))
-    print(rms)
-    return rms
-def cal_error(error, pixel, inval, val):
-    res = (np.sum(error < pixel) - inval) / val
-    return res
+    error_list = [0.25, 0.5, 1, 2, 4]
+    result_list = []
+    for i in error_list:
+        result_list.append((np.sum(error < i) - zero_counter)/true_counter)
+    error025 = result_list[0]
+    error05 = result_list[1]
+    error1 = result_list[2]
+    error2 = result_list[3]
+    error4 = result_list[4]
+    rms = np.sqrt(np.sum((disparity - truth) ** 2) / np.sum(true_counter))
+    return error025, error05, error1, error2, error4, rms

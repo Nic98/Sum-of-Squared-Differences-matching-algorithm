@@ -12,11 +12,9 @@ import time
 def old_evaluate(img_disparity, img_gt):
     valid = img_gt > 0
     valid_num = np.sum(valid)
-
     img_disparity = img_disparity * valid
 
     invalid_num = np.sum(img_gt == 0)
-
     error = np.abs(img_disparity - img_gt)
     error_0_25 = (np.sum(error < 0.25) - invalid_num) / valid_num
     error_0_5 = (np.sum(error < 0.5) - invalid_num) / valid_num
@@ -44,38 +42,55 @@ if __name__ == '__main__':
     Try to balance the window size to a reasonable value
     '''
 
-    ws = 40
-    print("ssd with ws ", ws)
-    ssd_dis = compute_SSD(left_image, right_image, ws, ws)
-    old_evaluate(ssd_dis, truth_image)
-    print("-" * 20)
-    print("sad with ws ", ws)
+    ws = 10
+    # SAD
+    print("{} with window size {} ".format("SAD", ws))
     sad_dis = compute_SAD(left_image, right_image, ws, ws)
-    old_evaluate(sad_dis, truth_image)
+    e1, e2, e3, e4, e5, rms = evaluate(sad_dis, truth_image)
+    print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("SAD", e1, e2, e3, e4, e5, rms))
     print("-" * 20)
-    print("ncc with ws ", ws)
+    # SSD
+    print("{} with window size {} ".format("SSD", ws))
+    ssd_dis = compute_SSD(left_image, right_image, ws, ws)
+    e1, e2, e3, e4, e5, rms = evaluate(ssd_dis, truth_image)
+    print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("SSD", e1, e2, e3, e4, e5, rms))
+    print("-" * 20)
+    # NCC
+    print("{} with window size {} ".format("NCC", ws))
     ncc_disparity = Original_NCC(left_image, right_image, ws)
-    old_evaluate(ncc_disparity, truth_image)
+    e1, e2, e3, e4, e5, rms = evaluate(ncc_disparity, truth_image)
+    print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("NCC", e1, e2, e3, e4, e5, rms))
     print("-" * 20)
-    print("ncc + filter with ws ", ws)
+    # NCC+Kernel
+    print("{} with window size {} ".format("NCC + Weight Kernel", ws))
     filter_ncc_disparity = filter_match(left_image, right_image, ws)
-    old_evaluate(filter_ncc_disparity, truth_image)
+    e1, e2, e3, e4, e5, rms = evaluate(filter_ncc_disparity, truth_image)
+    print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("NCC+Kernel", e1, e2, e3, e4, e5, rms))
     print("-" * 20)
-    print("ncc + smooth with ws ", ws)
-    filter_smooth_ncc_disparity = filter_match_smooth(left_image, right_image, ncc_disparity, ws, 0.6)
-    old_evaluate(filter_smooth_ncc_disparity, truth_image)
+    # NCC+Smoothing
+    print("{} with window size {} ".format("NCC + smoothing", ws))
+    smooth_ncc_disparity = disparity_smooth(left_image, right_image, ncc_disparity, ws, 0.6)
+    e1, e2, e3, e4, e5, rms = evaluate(smooth_ncc_disparity, truth_image)
+    print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("NCC+smoothing", e1, e2, e3, e4, e5, rms))
     print("-" * 20)
-    print("zncc with ws ", ws)
+    # ZNCC
+    print("{} with window size {} ".format("ZNCC", ws))
     zncc_disparity = Z_NCC(left_image, right_image, ws)
-    old_evaluate(zncc_disparity, truth_image)
+    e1, e2, e3, e4, e5, rms = evaluate(zncc_disparity, truth_image)
+    print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("ZNCC", e1, e2, e3, e4, e5, rms))
     print("-" * 20)
-    print("zncc + filter with ws ", ws)
-    filter_disparity = filter_match(left_image, right_image, ws, 'zncc')
-    old_evaluate(filter_disparity, truth_image)
+    # ZNCC+Kernel
+    print("{} with window size {} ".format("ZNCC + Weight Kernel", ws))
+    zncc_filter_disparity = filter_match(left_image, right_image, ws, 'zncc')
+    e1, e2, e3, e4, e5, rms = evaluate(zncc_filter_disparity, truth_image)
+    print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("ZNCC+Kernel", e1, e2, e3, e4, e5, rms))
     print("-" * 20)
-    print("zncc + smooth with ws ", ws)
-    filter_smooth_zncc_disparity = filter_match_smooth(left_image, right_image, zncc_disparity, ws, "zncc", 0.6)
-    old_evaluate(filter_smooth_zncc_disparity, truth_image)
+    # ZNCC+Smoothing
+    print("{} with window size {} ".format("ZNCC + smoothing", ws))
+    smooth_zncc_disparity = disparity_smooth(left_image, right_image, zncc_disparity, ws, "zncc", 0.6)
+    e1, e2, e3, e4, e5, rms = evaluate(smooth_zncc_disparity, truth_image)
+    print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("ZNCC+smoothing", e1, e2, e3, e4, e5, rms))
+
     '''
     Using a Gaussian kernel on the window to emphasize on the
     center pixel.
@@ -116,12 +131,12 @@ if __name__ == '__main__':
     plt.title("zncc disparity")
     plt.axis('off')
     plt.subplot(3, 1, 2)
-    plt.imshow(filter_disparity, cmap='gray')
+    plt.imshow(zncc_filter_disparity, cmap='gray')
     plt.title("zncc filter disparity")
     plt.axis('off')
     plt.subplot(3, 1, 3)
-    plt.imshow(filter_smooth_zncc_disparity, cmap='gray')
-    plt.title("disparity")
+    plt.imshow(smooth_zncc_disparity, cmap='gray')
+    plt.title("smooth zncc disparity")
     plt.axis('off')
     plt.show()
     pass

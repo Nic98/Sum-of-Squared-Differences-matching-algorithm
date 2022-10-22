@@ -11,8 +11,6 @@ def Original_NCC(left_img, right_img, window_size=9):
     disparity_mtx = np.zeros((height, width))
     threshold = int(floor(window_size / 2))
     x_range = 120
-    print("height: ", height)
-    print("width: ", width)
     for i, j in np.ndindex(disparity_mtx.shape):
         # np.fill not supported by numba
         disparity_mtx[i, j] = left_img[i, j]
@@ -63,8 +61,6 @@ def Z_NCC(left_img, right_img, window_size=9):
     disparity_mtx = np.zeros((height, width))
     threshold = int(floor(window_size / 2))
     x_range = 120
-    print("height: ", height)
-    print("width: ", width)
     for i, j in np.ndindex(disparity_mtx.shape):
         # np.fill not supported by numba
         disparity_mtx[i, j] = left_img[i, j]
@@ -122,8 +118,6 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
     disparity_mtx = np.zeros((height, width))
     threshold = int(floor(window_size / 2))
     x_range = 120
-    print("height: ", height)
-    print("width: ", width)
     for i, j in np.ndindex(disparity_mtx.shape):
         # np.fill not supported by numba
         disparity_mtx[i, j] = left_img[i, j]
@@ -153,6 +147,8 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
                 for pt2 in prange(x_axis):
                     dist = np.sqrt(pt1 ** 2 + pt2 ** 2) - 1
                     discount = 1 - ((1 / max(y_axis, x_axis)) * dist)  # * 0.3
+                    if discount < 0:
+                        discount = 0
                     my_filter[pt2, pt1] = discount
             for i in prange(y_axis):
                 if i != 0:
@@ -162,9 +158,7 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
             my_filter[0, 0] = 1
             if not (w_shape[0] == window_size and w_shape[0] == window_size):
                 my_filter = np.ones(w_shape, float)
-            # print(my_filter)
             left_window = left_window * my_filter
-            # print(filtered_window)
             best_match_disparity = 9999
             score = 0
             for right_x in prange(left_x - x_range, left_x + 1):
@@ -183,14 +177,11 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
                         n = (left_window_width[1] - left_window_width[0]) * (window_height[1] - window_height[0])
                         left_mean = np.mean(left_window)
                         right_mean = np.mean(right_window)
-                        ncc_score = np.multiply(left_window - left_mean, right_window - right_mean)
+                        ncc_score = np.sum(np.multiply(left_window - left_mean, right_window - right_mean))
                         left_var = np.std(left_window)  # (np.sqrt(left_window**2 - left_mean **2))
-                        # print(left_var)
                         right_var = np.std(right_window)  # (np.sqrt(right_window ** 2 - right_mean ** 2))
-                        # print(ncc_score)
-                        # print((left_var * right_var + 1))
-                        # print(right_var)
-                        ncc_score = np.sum(ncc_score / (left_var * right_var))
+                        const = 1 / ((2 * left_window.shape[0] * left_window[1] + 1) ** 2)
+                        ncc_score = np.sum(ncc_score / (left_var * right_var * const))
                     else:
                         ncc_score = np.sum(np.multiply(left_window, right_window))
                         ncc_score = ncc_score / (np.sqrt(np.sum(left_window ** 2)) * np.sqrt(np.sum(right_window ** 2)))
@@ -204,14 +195,12 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
 
 
 @njit(parallel=True)
-def filter_match_smooth(left_img, right_img, disparity, window_size=10, algo='ncc', weight = 0.9):
+def disparity_smooth(left_img, right_img, disparity, window_size=10, algo='ncc', weight = 0.9):
     width = left_img.shape[1]
     height = left_img.shape[0]
     disparity_mtx = np.zeros((height, width))
     threshold = int(floor(window_size / 2))
     x_range = 120
-    print("height: ", height)
-    print("width: ", width)
     for i, j in np.ndindex(disparity_mtx.shape):
         # np.fill not supported by numba
         disparity_mtx[i, j] = left_img[i, j]
