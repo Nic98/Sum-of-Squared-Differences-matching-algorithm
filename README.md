@@ -20,7 +20,6 @@ It requires 4 parameters to run the function:
 
 The function will output a depth(disparity) map with both left and right be masked with a gaussian kernel.
 
-
 Function **compute_ZSSD_smooth** is implemented base on the idea of smoothing. When comparing two windows, 
 an extra parameter 'smoothness' will be added for smoothing purpose.
 It requires 6 parameters to run the function:
@@ -31,5 +30,14 @@ It requires 6 parameters to run the function:
 5. Matching window width
 6. Matching window height
 
+The function will output a depth(disparity) map with smoothing.
 
-The function will output a depth(disparity) map.
+## winSize.py
+This file is to generate a plot for observing the relationship of the window size and root mean squared error.
+
+Function **evaluate_diff_size** requires 3 parameters:
+1. Left image
+2. Right image
+3. Ground Truth image
+
+The function will plot a line chart illustrates the relationship between window size and rms.
