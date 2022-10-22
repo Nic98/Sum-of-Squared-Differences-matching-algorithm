@@ -83,7 +83,6 @@ def compute_ZSSD_smooth(left_image, right_image, disparity, weight, win_width, w
     # Depth (disparity) map
     depth = np.zeros((height, width), np.uint8)
     for i, j in np.ndindex(depth.shape):
-        # np.fill not supported by numba
         depth[i, j] = left_image[i, j]
     depth = depth.astype(np.uint8)
     # depth = copy.deepcopy(left_image)
@@ -159,7 +158,6 @@ def ssd(left_image, right_image, win_width, win_height, algo='ssd'):
     # Depth (disparity) map
     depth = np.zeros((height, width), np.uint8)
     for i, j in np.ndindex(depth.shape):
-        # np.fill not supported by numba
         depth[i, j] = left_image[i, j]
     depth = depth.astype(np.uint8)
     # depth = copy.deepcopy(left_image)
