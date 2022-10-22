@@ -1,9 +1,9 @@
 import copy
 import cv2
 import numpy as np
-from numba import njit, prange
+# from numba import njit, prange
 import tqdm
-import time
+
 def mask_Gaussian(left_image, right_image, win_width, win_height):
     # Check if two images has the same shape
     if left_image.shape == right_image.shape:
@@ -73,7 +73,7 @@ def mask_Gaussian(left_image, right_image, win_width, win_height):
 
             depth[y, l_x] = disparity
     return depth
-@njit(parallel=True)
+
 def compute_ZSSD_smooth(left_image, right_image, disparity, weight, win_width, win_height):
     # start_time = time.time()
     # Check if two images has the same shape
@@ -93,7 +93,7 @@ def compute_ZSSD_smooth(left_image, right_image, disparity, weight, win_width, w
     half_w = win_width // 2
     half_h = win_height // 2
 
-    for y in prange(height):
+    for y in tqdm.tqdm(range(height)):
 
         top = half_h
         bottom = half_h
@@ -104,7 +104,7 @@ def compute_ZSSD_smooth(left_image, right_image, disparity, weight, win_width, w
             bottom = height - y - 1
         h_range = (y - top, y + bottom + 1)
 
-        for l_x in prange(width):
+        for l_x in range(width):
 
             left = half_w
             right = half_w
@@ -120,7 +120,7 @@ def compute_ZSSD_smooth(left_image, right_image, disparity, weight, win_width, w
                                             w_range[0]:w_range[1]])
             min = 999999
             best_disparity = 999999
-            for r_x in prange(l_x-120, l_x + 1):
+            for r_x in range(l_x-120, l_x + 1):
 
                 if r_x < left:
                     pass
@@ -149,7 +149,7 @@ def compute_ZSSD_smooth(left_image, right_image, disparity, weight, win_width, w
             depth[y, l_x] = best_disparity
     # print("--- %s seconds ---" % (time.time() - start_time))
     return depth
-@njit(parallel=True)
+
 def ssd(left_image, right_image, win_width, win_height, algo='ssd'):
     # start_time = time.time()
     # Check if two images has the same shape
@@ -169,7 +169,7 @@ def ssd(left_image, right_image, win_width, win_height, algo='ssd'):
     half_w = win_width // 2
     half_h = win_height // 2
 
-    for y in prange(height):
+    for y in tqdm.tqdm(range(height)):
 
         top = half_h
         bottom = half_h
@@ -180,7 +180,7 @@ def ssd(left_image, right_image, win_width, win_height, algo='ssd'):
             bottom = height - y - 1
         h_range = (y - top, y + bottom + 1)
 
-        for l_x in prange(width):
+        for l_x in range(width):
 
             left = half_w
             right = half_w
@@ -196,7 +196,7 @@ def ssd(left_image, right_image, win_width, win_height, algo='ssd'):
                                             w_range[0]:w_range[1]])
             min = 999999
             disparity = 999999
-            for r_x in prange(l_x-120, l_x + 1):
+            for r_x in range(l_x-120, l_x + 1):
 
                 if r_x < left:
                     pass

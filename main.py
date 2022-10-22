@@ -5,8 +5,6 @@ from SAD import *
 from NCC import *
 from evaluation import *
 from matplotlib import pyplot as plt
-from numba import njit, prange
-import time
 
 if __name__ == '__main__':
     # Ground Truth image
@@ -38,13 +36,13 @@ if __name__ == '__main__':
     e1, e2, e3, e4, e5, rms = evaluate(ncc_disparity, truth_image)
     print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("NCC", e1, e2, e3, e4, e5, rms))
     print("-" * 20)
-    # NCC+Kernel
+    # # NCC+Kernel
     print("{} with window size {} ".format("NCC + Weight Kernel", ws))
     filter_ncc_disparity = filter_match(left_image, right_image, ws)
     e1, e2, e3, e4, e5, rms = evaluate(filter_ncc_disparity, truth_image)
     print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("NCC+Kernel", e1, e2, e3, e4, e5, rms))
     print("-" * 20)
-    # NCC+Smoothing
+    # # NCC+Smoothing
     print("{} with window size {} ".format("NCC + smoothing", ws))
     smooth_ncc_disparity = disparity_smooth(left_image, right_image, ncc_disparity, ws, 0.6)
     e1, e2, e3, e4, e5, rms = evaluate(smooth_ncc_disparity, truth_image)

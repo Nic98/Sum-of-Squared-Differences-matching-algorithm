@@ -2,9 +2,9 @@ import numpy as np
 from math import floor
 from copy import deepcopy
 from numba import njit, prange
+import tqdm
 
-
-@njit(parallel=True)
+# @njit(parallel=True)
 def NCC(left_img, right_img, window_size=9):
     width = left_img.shape[1]
     height = left_img.shape[0]
@@ -16,7 +16,7 @@ def NCC(left_img, right_img, window_size=9):
         disparity_mtx[i, j] = left_img[i, j]
     disparity_mtx = disparity_mtx.astype(np.uint8)
 
-    for left_y in prange(height):
+    for left_y in tqdm.tqdm(range(height)):
         for left_x in prange(width):
             left_bound, right_bound, bottom_bound, top_bound = threshold, threshold, threshold, threshold
             if left_x < threshold:
@@ -54,7 +54,7 @@ def NCC(left_img, right_img, window_size=9):
     return disparity_mtx
 
 
-@njit(parallel=True)
+# @njit(parallel=True)
 def ZNCC(left_img, right_img, window_size=9):
     width = left_img.shape[1]
     height = left_img.shape[0]
@@ -67,8 +67,8 @@ def ZNCC(left_img, right_img, window_size=9):
     disparity_mtx = disparity_mtx.astype(np.uint8)
     left_mean = np.mean(left_img)
     right_mean = np.mean(right_img)
-    for left_y in prange(height):
-        for left_x in prange(width):
+    for left_y in tqdm.tqdm(range(height)):
+        for left_x in range(width):
             left_bound, right_bound, bottom_bound, top_bound = threshold, threshold, threshold, threshold
             if left_x < threshold:
                 left_bound = left_x
@@ -85,7 +85,7 @@ def ZNCC(left_img, right_img, window_size=9):
                 int(left_window_width[0]):int(left_window_width[1])])
             best_match_disparity = 9999
             score = 0
-            for right_x in prange(left_x - x_range, left_x + 1):
+            for right_x in range(left_x - x_range, left_x + 1):
                 if right_x - left_bound < 0:
                     pass
                 elif right_x + right_bound + 1 > width:
