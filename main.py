@@ -34,7 +34,7 @@ if __name__ == '__main__':
     print("-" * 20)
     # NCC
     print("{} with window size {} ".format("NCC", ws))
-    ncc_disparity = Original_NCC(left_image, right_image, ws)
+    ncc_disparity = NCC(left_image, right_image, ws)
     e1, e2, e3, e4, e5, rms = evaluate(ncc_disparity, truth_image)
     print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("NCC", e1, e2, e3, e4, e5, rms))
     print("-" * 20)
@@ -52,7 +52,7 @@ if __name__ == '__main__':
     print("-" * 20)
     # ZNCC
     print("{} with window size {} ".format("ZNCC", ws))
-    zncc_disparity = Z_NCC(left_image, right_image, ws)
+    zncc_disparity = ZNCC(left_image, right_image, ws)
     e1, e2, e3, e4, e5, rms = evaluate(zncc_disparity, truth_image)
     print("{}: error 0.25 = {:.3f}, error 0.5 = {:.3f}, error 1 = {:.3f}, error 2 = {:.3f}, error 4 = {:.3f}, rms = {:.3f}".format("ZNCC", e1, e2, e3, e4, e5, rms))
     print("-" * 20)

@@ -5,7 +5,7 @@ from numba import njit, prange
 
 
 @njit(parallel=True)
-def Original_NCC(left_img, right_img, window_size=9):
+def NCC(left_img, right_img, window_size=9):
     width = left_img.shape[1]
     height = left_img.shape[0]
     disparity_mtx = np.zeros((height, width))
@@ -55,7 +55,7 @@ def Original_NCC(left_img, right_img, window_size=9):
 
 
 @njit(parallel=True)
-def Z_NCC(left_img, right_img, window_size=9):
+def ZNCC(left_img, right_img, window_size=9):
     width = left_img.shape[1]
     height = left_img.shape[0]
     disparity_mtx = np.zeros((height, width))
