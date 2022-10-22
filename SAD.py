@@ -4,7 +4,8 @@ from numba import njit, prange
 import tqdm
 import time
 import tqdm
-@njit(parallel=True)
+
+# @njit(parallel=True)
 def compute_SAD(left_image, right_image, win_width, win_height):
     # start_time = time.time()
     # Check if two images has the same shape
@@ -24,7 +25,7 @@ def compute_SAD(left_image, right_image, win_width, win_height):
     half_w = win_width // 2
     half_h = win_height // 2
 
-    for y in prange(height):
+    for y in tqdm.tqdm(range(height)):
 
         top = half_h
         bottom = half_h
