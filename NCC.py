@@ -102,10 +102,11 @@ def Z_NCC(left_img, right_img, window_size=9):
                     n = (left_window_width[1] - left_window_width[0]) * (window_height[1] - window_height[0])
                     left_mean = np.mean(left_window)
                     right_mean = np.mean(right_window)
-                    ncc_score = np.multiply(left_window - left_mean, right_window - right_mean)
+                    ncc_score = np.sum(np.multiply(left_window - left_mean, right_window - right_mean))
                     left_var = np.std(left_window)  # (np.sqrt(left_window**2 - left_mean **2))
                     right_var = np.std(right_window)  # (np.sqrt(right_window ** 2 - right_mean ** 2))
-                    ncc_score = np.sum(ncc_score / (left_var * right_var))
+                    const = 1/((2 * left_window.shape[0] * left_window[1] + 1)**2)
+                    ncc_score = np.sum(ncc_score / (left_var * right_var * const))
                     # ncc_score = ncc_score / (np.sqrt(np.sum((left_window - left_mean) ** 2)) * np.sqrt(np.sum((right_window - right_mean) ** 2)))
                     if ncc_score > score:
                         score = ncc_score

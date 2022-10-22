@@ -121,7 +121,7 @@ if __name__ == '__main__':
     plt.axis('off')
     plt.subplot(3, 1, 3)
     plt.imshow(filter_smooth_zncc_disparity, cmap='gray')
-    plt.title("disparity")
+    plt.title("zncc smooth disparity")
     plt.axis('off')
     plt.show()
     pass
