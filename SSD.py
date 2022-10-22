@@ -1,7 +1,6 @@
 import copy
 import cv2
 import numpy as np
-# from numba import njit, prange
 import tqdm
 
 def mask_Gaussian(left_image, right_image, win_width, win_height):
@@ -11,12 +10,7 @@ def mask_Gaussian(left_image, right_image, win_width, win_height):
     else:
         raise Exception("Two images have different shape")
     # Depth (disparity) map
-    depth = np.zeros((height, width), np.uint8)
-    for i, j in np.ndindex(depth.shape):
-        # np.fill not supported by numba
-        depth[i, j] = left_image[i, j]
-    depth = depth.astype(np.uint8)
-    # depth = copy.deepcopy(left_image)
+    depth = copy.deepcopy(left_image)
 
     # half of the window size
     half_w = win_width // 2
@@ -82,12 +76,7 @@ def compute_ZSSD_smooth(left_image, right_image, disparity, weight, win_width, w
     else:
         raise Exception("Two images have different shape")
     # Depth (disparity) map
-    depth = np.zeros((height, width), np.uint8)
-    for i, j in np.ndindex(depth.shape):
-        # np.fill not supported by numba
-        depth[i, j] = left_image[i, j]
-    depth = depth.astype(np.uint8)
-    # depth = copy.deepcopy(left_image)
+    depth = copy.deepcopy(left_image)
 
     # half of the window size
     half_w = win_width // 2
@@ -158,12 +147,7 @@ def ssd(left_image, right_image, win_width, win_height, algo='ssd'):
     else:
         raise Exception("Two images have different shape")
     # Depth (disparity) map
-    depth = np.zeros((height, width), np.uint8)
-    for i, j in np.ndindex(depth.shape):
-        # np.fill not supported by numba
-        depth[i, j] = left_image[i, j]
-    depth = depth.astype(np.uint8)
-    # depth = copy.deepcopy(left_image)
+    depth = copy.deepcopy(left_image)
 
     # half of the window size
     half_w = win_width // 2

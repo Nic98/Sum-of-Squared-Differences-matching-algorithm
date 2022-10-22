@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-# from numba import njit, prange
 import tqdm
 
 def compute_SAD(left_image, right_image, win_width, win_height):

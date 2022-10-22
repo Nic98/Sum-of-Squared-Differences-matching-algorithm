@@ -1,23 +1,16 @@
 import numpy as np
 from math import floor
-from copy import deepcopy
-from numba import njit, prange
 import tqdm
-
-# @njit(parallel=True)
+import copy
 def NCC(left_img, right_img, window_size=9):
     width = left_img.shape[1]
     height = left_img.shape[0]
     disparity_mtx = np.zeros((height, width))
     threshold = int(floor(window_size / 2))
     x_range = 120
-    for i, j in np.ndindex(disparity_mtx.shape):
-        # np.fill not supported by numba
-        disparity_mtx[i, j] = left_img[i, j]
-    disparity_mtx = disparity_mtx.astype(np.uint8)
-
+    disparity_mtx = copy.deepcopy(left_img)
     for left_y in tqdm.tqdm(range(height)):
-        for left_x in prange(width):
+        for left_x in range(width):
             left_bound, right_bound, bottom_bound, top_bound = threshold, threshold, threshold, threshold
             if left_x < threshold:
                 left_bound = left_x
@@ -34,7 +27,7 @@ def NCC(left_img, right_img, window_size=9):
                 int(left_window_width[0]):int(left_window_width[1])])
             best_match_disparity = 9999
             score = 0
-            for right_x in prange(left_x - x_range, left_x + 1):
+            for right_x in range(left_x - x_range, left_x + 1):
                 if right_x - left_bound < 0:
                     pass
                 elif right_x + right_bound + 1 > width:
@@ -53,18 +46,13 @@ def NCC(left_img, right_img, window_size=9):
             disparity_mtx[left_y, left_x] = best_match_disparity
     return disparity_mtx
 
-
-# @njit(parallel=True)
 def ZNCC(left_img, right_img, window_size=9):
     width = left_img.shape[1]
     height = left_img.shape[0]
     disparity_mtx = np.zeros((height, width))
     threshold = int(floor(window_size / 2))
     x_range = 120
-    for i, j in np.ndindex(disparity_mtx.shape):
-        # np.fill not supported by numba
-        disparity_mtx[i, j] = left_img[i, j]
-    disparity_mtx = disparity_mtx.astype(np.uint8)
+    disparity_mtx = copy.deepcopy(left_img)
     left_mean = np.mean(left_img)
     right_mean = np.mean(right_img)
     for left_y in tqdm.tqdm(range(height)):
@@ -110,18 +98,13 @@ def ZNCC(left_img, right_img, window_size=9):
             disparity_mtx[left_y, left_x] = best_match_disparity
     return disparity_mtx
 
-
-# @njit(parallel=True)
 def filter_match(left_img, right_img, window_size=10, algo='ncc'):
     width = left_img.shape[1]
     height = left_img.shape[0]
     disparity_mtx = np.zeros((height, width))
     threshold = int(floor(window_size / 2))
     x_range = 120
-    for i, j in np.ndindex(disparity_mtx.shape):
-        # np.fill not supported by numba
-        disparity_mtx[i, j] = left_img[i, j]
-    disparity_mtx = disparity_mtx.astype(np.uint8)
+    disparity_mtx = copy.deepcopy(left_img)
     for left_y in tqdm.tqdm(range(height)):
         for left_x in range(width):
             left_bound, right_bound, bottom_bound, top_bound = threshold, threshold, threshold, threshold
@@ -144,7 +127,7 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
             y_axis = w_shape[1]
             x_axis = w_shape[0]
             for pt1 in range(y_axis):
-                for pt2 in prange(x_axis):
+                for pt2 in range(x_axis):
                     dist = np.sqrt(pt1 ** 2 + pt2 ** 2) - 1
                     discount = 1 - ((1 / max(y_axis, x_axis)) * dist)  # * 0.3
                     if discount < 0:
@@ -192,21 +175,15 @@ def filter_match(left_img, right_img, window_size=10, algo='ncc'):
             disparity_mtx[left_y, left_x] = best_match_disparity
     return disparity_mtx
 
-
-
-# @njit(parallel=True)
 def disparity_smooth(left_img, right_img, disparity, window_size=10, algo='ncc', weight = 0.9):
     width = left_img.shape[1]
     height = left_img.shape[0]
     disparity_mtx = np.zeros((height, width))
     threshold = int(floor(window_size / 2))
     x_range = 120
-    for i, j in np.ndindex(disparity_mtx.shape):
-        # np.fill not supported by numba
-        disparity_mtx[i, j] = left_img[i, j]
-    disparity_mtx = disparity_mtx.astype(np.uint8)
+    disparity_mtx = copy.deepcopy(left_img)
     for left_y in tqdm.tqdm(range(height)):
-        for left_x in prange(width):
+        for left_x in range(width):
             left_bound, right_bound, bottom_bound, top_bound = threshold, threshold, threshold, threshold
             if left_x < threshold:
                 left_bound = left_x
